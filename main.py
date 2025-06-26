@@ -1,5 +1,9 @@
 from fastapi import FastAPI, HTTPException, Query
+from pydantic import BaseModel
+from typing import List, Union
 from recommender import GameRecommender
+import pandas as pd
+import os
 
 app = FastAPI(title="Game Recommender")
 
