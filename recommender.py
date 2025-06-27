@@ -5,6 +5,7 @@ from typing import List, Dict
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize
 
+# Class to predict recommendations
 class GameRecommender:
     def __init__(self, pickle_path: str = "games_df_full.pkl"):
         self.df = pd.read_pickle(pickle_path)
@@ -22,7 +23,7 @@ class GameRecommender:
         # Vectorize features
         self.vectorizer = CountVectorizer(tokenizer=lambda x: x, lowercase=False)
         self.feature_matrix = self.vectorizer.fit_transform(self.df["features"])
-        self.feature_matrix = normalize(self.feature_matrix)  # For cosine similarity
+        self.feature_matrix = normalize(self.feature_matrix)  # normalize For cosine similarity
 
     def find_matching_index(self, game_query: str) -> int:
         query = game_query.lower()
@@ -42,14 +43,16 @@ class GameRecommender:
         # Otherwise return top-rated match
         return matched.sort_values(by="rating", ascending=False).index[0]
 
+    # recommend new games to the user
     def recommend_games(self, game_name: str, top_k: int = 5) -> List[Dict[str, float]]:
         idx = self.find_matching_index(game_name)
         if idx == -1:
             print("No relevant game found for:", game_name)
             return []
 
+
         query_vector = self.feature_matrix[idx]
-        similarities = query_vector @ self.feature_matrix.T  # Sparse dot product
+        similarities = query_vector @ self.feature_matrix.T  # Sparse dot product (Matrix Multiplication)
         similarities = similarities.toarray().flatten()
 
         # Weighted score with rating
@@ -57,4 +60,5 @@ class GameRecommender:
         weighted_scores[idx] = -1  # Exclude the queried game
 
         top_indices = np.argsort(weighted_scores)[::-1][:top_k]
+        # return the preductions in a dictionary format
         return self.df.iloc[top_indices][["name", "rating"]].to_dict(orient="records")

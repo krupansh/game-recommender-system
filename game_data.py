@@ -2,11 +2,12 @@ import requests
 import pandas as pd
 import time
 
-API_KEY = "" # fetch it from .env
+API_KEY = "8bdf8f50a90f4a3e907fb72f929e431c" # fetch it from .env
 BASE_URL = "https://api.rawg.io/api/games"
 PAGE_SIZE = 40  # Max page size allowed
 MAX_PAGES = 250  # 1250 * 40 = 50,000 games
 
+# Script to get all the games from RAWG API
 def fetch_all_games():
     all_games = []
 
@@ -20,6 +21,7 @@ def fetch_all_games():
         }
 
         try:
+            # using the requests.get function to fetch data
             res = requests.get(BASE_URL, params=params, timeout=10)
             res.raise_for_status()
             results = res.json().get("results", [])
@@ -32,13 +34,16 @@ def fetch_all_games():
                     "platforms": [p["platform"]["name"] for p in game.get("platforms", [])],
                     "rating": game["rating"]
                 })
+        # Exceptions for error handling
         except Exception as e:
             print(f"Error on page {page}: {e}")
         print(page)
+        # used to bypass the rate limiting by waiting for some time
         time.sleep(0.25)  # Be nice to their API
         
     return all_games
 
+# Helper function to save the game data to a csv and pickle file.
 def save_games_to_pickle():
     print("start")
     games = fetch_all_games()

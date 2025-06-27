@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import requests
 
+# defines the URL for API
 CRUD_API = "http://127.0.0.1:8001/games"
 
 st.sidebar.title("🛠️ Manage Game Database")
@@ -11,6 +12,7 @@ def eval_comma(field):
     field = [f.strip() for f in field.split(",") if f.strip()]
     return field
 
+# action for GET request
 if crud_action == "View Games":
     if st.sidebar.button("Load Games"):
         response = requests.get(CRUD_API)
@@ -20,6 +22,7 @@ if crud_action == "View Games":
         else:
             st.error("Failed to load games.")
 
+# action for POST request
 elif crud_action == "Add Game":
     with st.sidebar.form("add_game_form"):
         name = st.text_input("Name")
@@ -47,6 +50,7 @@ elif crud_action == "Add Game":
             except Exception as e:
                 st.error(f'Request failed: {e}')
 
+# action for PATCH request
 elif crud_action == "Update Game":
     game_id = st.sidebar.number_input("Game ID to Update", step=1)
     update_field = st.sidebar.selectbox("Field to Update", ["name", "genres", "tags", "platforms", "rating"])
@@ -75,6 +79,7 @@ elif crud_action == "Update Game":
         except Exception as e:
             st.error(f"Invalid format: {e}")
 
+# action for DELETE request
 elif crud_action == "Delete Game":
     game_id = st.sidebar.number_input("Game ID to Delete", step=1)
     if st.sidebar.button("Delete"):
