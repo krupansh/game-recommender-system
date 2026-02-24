@@ -1,4 +1,4 @@
-# 🎮 Game Recommendation System
+# Game Recommendation System
 
 A collaborative filtering-based recommendation system for suggesting games based on user preferences.
 
