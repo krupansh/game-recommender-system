@@ -23,6 +23,3 @@ The system also integrates the RAWG API to fetch game metadata.
 - Interactive dashboard
 - External game metadata integration (RAWG API)
 
-```bash
-pip install -r requirements.txt
-streamlit run streamlit_app.py
